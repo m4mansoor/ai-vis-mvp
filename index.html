@@ -1,424 +1,441 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nano Grid - Smart Solar Inverter IoT Solution | OLIVE TS</title>
+    <title>AI Vehicle Damage Detection MVP - $5,000 Presentation</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="presentation-container">
-        <!-- Navigation Controls -->
-        <div class="nav-controls">
-            <button class="nav-btn prev-btn" id="prevBtn" aria-label="Previous slide">❮</button>
-            <button class="nav-btn next-btn" id="nextBtn" aria-label="Next slide">❯</button>
-        </div>
+    <!-- Loading Screen -->
+    <div id="loader" class="loader">
+        <div class="spinner"></div>
+        <p>Loading Presentation...</p>
+    </div>
 
-        <!-- Slide Indicators -->
-        <div class="slide-indicators">
-            <span class="indicator active" data-slide="0"></span>
-            <span class="indicator" data-slide="1"></span>
-            <span class="indicator" data-slide="2"></span>
-            <span class="indicator" data-slide="3"></span>
-            <span class="indicator" data-slide="4"></span>
-            <span class="indicator" data-slide="5"></span>
-        </div>
+    <!-- Scroll Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
 
-        <!-- Progress Bar -->
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
-        </div>
+    <!-- Particle Canvas -->
+    <canvas id="particles"></canvas>
 
-        <!-- Slides Container -->
-        <div class="slides-container">
-            <!-- Slide 1: Title Slide -->
-            <div class="slide active" id="slide-0">
-                <div class="slide-content title-slide">
-                    <div class="hero-content">
-                        <div class="project-badge">OLIVE TS - IoT Division</div>
-                        <h1 class="project-title">Nano Grid</h1>
-                        <p class="project-subtitle">Smart Solar Inverter IoT Solution</p>
-                        <div class="client-info">
-                            <h2>Presented to:</h2>
-                            <h3>Prince Sultan University</h3>
-                            <p>Riyadh, Kingdom of Saudi Arabia</p>
-                        </div>
-                        <div class="hero-stats">
-                            <div class="stat-item">
-                                <span class="stat-number">40K</span>
-                                <span class="stat-label">SAR Budget</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-number">8-12</span>
-                                <span class="stat-label">Weeks</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-number">380</span>
-                                <span class="stat-label">Man Hours</span>
-                            </div>
-                        </div>
+    <!-- Main Content -->
+    <div class="presentation-container" id="mainContent">
+        
+        <!-- Slide 1: Title -->
+        <section class="slide slide-title" id="slide1">
+            <div class="slide-content">
+                <h1 id="typewriter" class="main-title"></h1>
+                <p class="subtitle">Phase 1 Proof of Concept - USD 5,000</p>
+                <div class="scroll-indicator">
+                    <div class="scroll-arrow"></div>
+                    <span>Scroll to explore</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Executive Summary -->
+        <section class="slide" id="slide2">
+            <div class="slide-content">
+                <h2>Executive Summary</h2>
+                <p class="slide-subtitle">Complete AI-powered vehicle damage detection system</p>
+                <div class="features-grid">
+                    <div class="feature-card" data-delay="0">
+                        <div class="feature-icon">🖥️</div>
+                        <h3>Web Dashboard</h3>
+                        <p>Secure login and intuitive image upload interface</p>
+                    </div>
+                    <div class="feature-card" data-delay="100">
+                        <div class="feature-icon">🤖</div>
+                        <h3>AI-Powered Detection</h3>
+                        <p>YOLO model trained on vehicle damage dataset</p>
+                    </div>
+                    <div class="feature-card" data-delay="200">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Real-Time Results</h3>
+                        <p>Instant damage detection and visualization</p>
+                    </div>
+                    <div class="feature-card" data-delay="300">
+                        <div class="feature-icon">📊</div>
+                        <h3>Automated Reporting</h3>
+                        <p>PDF reports emailed to admin and vehicle owner</p>
+                    </div>
+                    <div class="feature-card" data-delay="400">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Complete Workflow</h3>
+                        <p>End-to-end demonstration of damage documentation process</p>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Slide 2: Executive Summary -->
-            <div class="slide" id="slide-1">
-                <div class="slide-content">
-                    <h1>Executive Summary</h1>
-                    <div class="summary-grid">
-                        <div class="metric-card primary">
-                            <div class="metric-icon">📅</div>
-                            <div class="metric-value">8-12 Weeks</div>
-                            <div class="metric-label">Development Timeline</div>
-                        </div>
-                        <div class="metric-card secondary">
-                            <div class="metric-icon">💰</div>
-                            <div class="metric-value">40,000 SAR</div>
-                            <div class="metric-label">Total Budget</div>
-                        </div>
-                        <div class="metric-card success">
-                            <div class="metric-icon">⏱️</div>
-                            <div class="metric-value">380 Hours</div>
-                            <div class="metric-label">Total Man Hours</div>
-                        </div>
-                        <div class="metric-card info">
-                            <div class="metric-icon">👥</div>
-                            <div class="metric-value">5 Professionals</div>
-                            <div class="metric-label">Lean Team</div>
-                        </div>
+        <!-- Slide 3: MVP Scope & Deliverables -->
+        <section class="slide" id="slide3">
+            <div class="slide-content">
+                <h2>MVP Scope & Deliverables</h2>
+                <div class="deliverables-grid">
+                    <div class="deliverable-section">
+                        <h3>🎨 Frontend Development</h3>
+                        <ul>
+                            <li>Responsive web dashboard</li>
+                            <li>User authentication system</li>
+                            <li>Image upload interface</li>
+                            <li>Results visualization</li>
+                        </ul>
                     </div>
-                    <div class="value-propositions">
-                        <h2>Key Value Propositions</h2>
-                        <ul class="value-list">
-                            <li>✓ Complete solar inverter IoT solution with monitoring and control capabilities</li>
-                            <li>✓ Parallel development approach accelerating time-to-market</li>
-                            <li>✓ Pre-built backend infrastructure reducing development risk</li>
-                            <li>✓ 3kW system with overnight battery autonomy</li>
-                            <li>✓ Mobile app integration with ThingsBoard dashboard</li>
+                    <div class="deliverable-section">
+                        <h3>🧠 AI Integration</h3>
+                        <ul>
+                            <li>YOLO model deployment</li>
+                            <li>Image processing pipeline</li>
+                            <li>Damage detection API</li>
+                            <li>Confidence scoring</li>
+                        </ul>
+                    </div>
+                    <div class="deliverable-section">
+                        <h3>🔧 Backend Services</h3>
+                        <ul>
+                            <li>Database design & setup</li>
+                            <li>API endpoints</li>
+                            <li>User management</li>
+                            <li>File storage system</li>
+                        </ul>
+                    </div>
+                    <div class="deliverable-section">
+                        <h3>📈 Automation & Reports</h3>
+                        <ul>
+                            <li>PDF report generation</li>
+                            <li>Email notification system</li>
+                            <li>Dashboard analytics</li>
+                            <li>Data export features</li>
                         </ul>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Slide 3: Timeline & Budget Overview -->
-            <div class="slide" id="slide-2">
-                <div class="slide-content">
-                    <h1>Timeline & Budget Overview</h1>
-                    <div class="overview-layout">
-                        <div class="timeline-section">
-                            <h2>Development Phases</h2>
-                            <div class="timeline">
-                                <div class="timeline-item">
-                                    <div class="timeline-marker phase-1"></div>
-                                    <div class="timeline-content">
-                                        <h3>Phase 1: Hardware (Weeks 1-3)</h3>
-                                        <p>PCB design, prototyping, enclosures</p>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-marker phase-2"></div>
-                                    <div class="timeline-content">
-                                        <h3>Phase 2: Firmware (Weeks 2-6)</h3>
-                                        <p>MQTT, sensor drivers, OTA updates</p>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-marker phase-3"></div>
-                                    <div class="timeline-content">
-                                        <h3>Phase 3: Procurement (Weeks 3-5)</h3>
-                                        <p>Solar panels, batteries, inverters</p>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-marker phase-4"></div>
-                                    <div class="timeline-content">
-                                        <h3>Phase 4: Software (Weeks 5-8)</h3>
-                                        <p>Mobile app, ThingsBoard integration</p>
-                                    </div>
-                                </div>
-                            </div>
+        <!-- Slide 4: Technical Architecture -->
+        <section class="slide" id="slide4">
+            <div class="slide-content">
+                <h2>Technical Architecture</h2>
+                <div class="tech-stack">
+                    <div class="tech-category">
+                        <h3>Frontend</h3>
+                        <div class="tech-badges">
+                            <span class="tech-badge">React.js</span>
+                            <span class="tech-badge">Bootstrap UI</span>
+                            <span class="tech-badge">JWT Authentication</span>
+                            <span class="tech-badge">WebSocket</span>
+                            <span class="tech-badge">Mobile Responsive</span>
                         </div>
-                        <div class="budget-section">
-                            <h2>Budget Allocation</h2>
-                            <div class="chart-container" style="position: relative; height: 300px;">
-                                <canvas id="budgetChart"></canvas>
-                            </div>
-                            <div class="budget-highlights">
-                                <div class="budget-item">
-                                    <span class="budget-color hardware"></span>
-                                    <span>Hardware Components: 15,500 SAR (38.8%)</span>
-                                </div>
-                                <div class="budget-item">
-                                    <span class="budget-color engineering"></span>
-                                    <span>Engineering: 21,000 SAR (52.5%)</span>
-                                </div>
-                                <div class="budget-item">
-                                    <span class="budget-color contingency"></span>
-                                    <span>Contingency: 3,500 SAR (8.8%)</span>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="tech-category">
+                        <h3>Backend</h3>
+                        <div class="tech-badges">
+                            <span class="tech-badge">Node.js</span>
+                            <span class="tech-badge">Express</span>
+                            <span class="tech-badge">MongoDB</span>
+                            <span class="tech-badge">AWS/Digital Ocean</span>
+                            <span class="tech-badge">SendGrid</span>
+                        </div>
+                    </div>
+                    <div class="tech-category">
+                        <h3>AI Model</h3>
+                        <div class="tech-badges">
+                            <span class="tech-badge ai-badge">YOLO Model</span>
+                            <span class="tech-badge ai-badge">Python Flask</span>
+                            <span class="tech-badge ai-badge">Image Processing</span>
+                            <span class="tech-badge ai-badge">85%+ Accuracy</span>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Slide 4: Detailed Milestones -->
-            <div class="slide" id="slide-3">
-                <div class="slide-content">
-                    <h1>Detailed Milestones</h1>
-                    <div class="table-container">
-                        <table class="milestones-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Milestone</th>
-                                    <th>Lead Roles</th>
-                                    <th>Timeline</th>
-                                    <th>Hours</th>
-                                    <th>Cost (SAR)</th>
-                                    <th>Comments</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Hardware design & prototyping</td>
-                                    <td>HW Eng. (2)</td>
-                                    <td>Weeks 1-3</td>
-                                    <td>80 h</td>
-                                    <td>4,000</td>
-                                    <td>Parallel PCB & proto development</td>
-                                </tr>
-                                <tr class="alternate">
-                                    <td>2</td>
-                                    <td>Firmware core development</td>
-                                    <td>FW Dev. (2)</td>
-                                    <td>Weeks 2-6</td>
-                                    <td>120 h</td>
-                                    <td>6,000</td>
-                                    <td>MQTT, OTA, failsafe systems</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Solar panel procurement</td>
-                                    <td>Supply Mgr.</td>
-                                    <td>Weeks 3-5</td>
-                                    <td>—</td>
-                                    <td>5,000</td>
-                                    <td>3 kW mono-crystalline set</td>
-                                </tr>
-                                <tr class="alternate">
-                                    <td>4</td>
-                                    <td>Battery pack & BMS</td>
-                                    <td>HW Eng.</td>
-                                    <td>Weeks 3-5</td>
-                                    <td>10 h</td>
-                                    <td>4,000</td>
-                                    <td>5 kWh Li-ion for autonomy</td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>Inverter & BOS components</td>
-                                    <td>HW Eng.</td>
-                                    <td>Weeks 3-5</td>
-                                    <td>10 h</td>
-                                    <td>2,500</td>
-                                    <td>3 kW hybrid inverter</td>
-                                </tr>
-                                <tr class="alternate">
-                                    <td>6</td>
-                                    <td>Mobile app development</td>
-                                    <td>App Dev. (1)</td>
-                                    <td>Weeks 5-8</td>
-                                    <td>60 h</td>
-                                    <td>4,500</td>
-                                    <td>React-Native with API layer</td>
-                                </tr>
-                                <tr>
-                                    <td>7</td>
-                                    <td>ThingsBoard integration</td>
-                                    <td>IoT Eng. (1)</td>
-                                    <td>Weeks 6-8</td>
-                                    <td>40 h</td>
-                                    <td>2,000</td>
-                                    <td>Custom widgets & alarms</td>
-                                </tr>
-                                <tr class="alternate">
-                                    <td>8</td>
-                                    <td>System testing</td>
-                                    <td>QA (2)</td>
-                                    <td>Weeks 8-10</td>
-                                    <td>40 h</td>
-                                    <td>3,000</td>
-                                    <td>Field commissioning</td>
-                                </tr>
-                                <tr>
-                                    <td>9</td>
-                                    <td>Documentation & training</td>
-                                    <td>PM (1)</td>
-                                    <td>Weeks 10-12</td>
-                                    <td>20 h</td>
-                                    <td>1,500</td>
-                                    <td>Manuals & handoff</td>
-                                </tr>
-                                <tr class="contingency">
-                                    <td>—</td>
-                                    <td><strong>Contingency (10%)</strong></td>
-                                    <td>—</td>
-                                    <td>—</td>
-                                    <td>—</td>
-                                    <td><strong>3,500</strong></td>
-                                    <td>Risk mitigation buffer</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr class="total-row">
-                                    <td colspan="4"><strong>TOTAL</strong></td>
-                                    <td><strong>380 h</strong></td>
-                                    <td><strong>40,000</strong></td>
-                                    <td><strong>8-12 week delivery</strong></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+        <!-- Slide 5: Budget Breakdown -->
+        <section class="slide" id="slide5">
+            <div class="slide-content">
+                <h2>Budget Breakdown</h2>
+                <p class="slide-subtitle">Total: 125 hours × $40/hr = $5,000</p>
+                <div class="budget-table-container">
+                    <table class="budget-table">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Hours</th>
+                                <th>Rate</th>
+                                <th>Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-delay="0">
+                                <td>Dashboard Development</td>
+                                <td>20</td>
+                                <td>$40</td>
+                                <td>$800</td>
+                            </tr>
+                            <tr data-delay="100">
+                                <td>YOLO Model Deployment</td>
+                                <td>17</td>
+                                <td>$40</td>
+                                <td>$680</td>
+                            </tr>
+                            <tr data-delay="200">
+                                <td>Damage Detection Integration</td>
+                                <td>20</td>
+                                <td>$40</td>
+                                <td>$800</td>
+                            </tr>
+                            <tr data-delay="300">
+                                <td>Report Generation</td>
+                                <td>17</td>
+                                <td>$40</td>
+                                <td>$680</td>
+                            </tr>
+                            <tr data-delay="400">
+                                <td>User Data Handling</td>
+                                <td>13</td>
+                                <td>$40</td>
+                                <td>$520</td>
+                            </tr>
+                            <tr data-delay="500">
+                                <td>Notification System</td>
+                                <td>10</td>
+                                <td>$40</td>
+                                <td>$400</td>
+                            </tr>
+                            <tr data-delay="600">
+                                <td>Testing & Bug Fixing</td>
+                                <td>13</td>
+                                <td>$40</td>
+                                <td>$520</td>
+                            </tr>
+                            <tr data-delay="700">
+                                <td>Deployment & User Training</td>
+                                <td>15</td>
+                                <td>$40</td>
+                                <td>$600</td>
+                            </tr>
+                            <tr class="total-row" data-delay="800">
+                                <td><strong>TOTAL</strong></td>
+                                <td><strong>125</strong></td>
+                                <td><strong>$40</strong></td>
+                                <td><strong>$5,000</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </section>
 
-            <!-- Slide 5: Team & Assumptions -->
-            <div class="slide" id="slide-4">
-                <div class="slide-content">
-                    <h1>Team Structure & Key Assumptions</h1>
-                    <div class="team-assumptions-layout">
-                        <div class="team-section">
-                            <h2>Project Team</h2>
-                            <div class="team-grid">
-                                <div class="team-member">
-                                    <div class="member-icon hw">HW</div>
-                                    <h3>Hardware Engineers</h3>
-                                    <p>2 Senior Engineers</p>
-                                    <ul>
-                                        <li>PCB Design</li>
-                                        <li>Power Systems</li>
-                                        <li>BMS Integration</li>
-                                    </ul>
-                                </div>
-                                <div class="team-member">
-                                    <div class="member-icon fw">FW</div>
-                                    <h3>Firmware/App Devs</h3>
-                                    <p>2 Developers</p>
-                                    <ul>
-                                        <li>Embedded C/C++</li>
-                                        <li>React-Native</li>
-                                        <li>IoT Protocols</li>
-                                    </ul>
-                                </div>
-                                <div class="team-member">
-                                    <div class="member-icon pm">PM</div>
-                                    <h3>PM/QA Lead</h3>
-                                    <p>1 Project Manager</p>
-                                    <ul>
-                                        <li>Quality Assurance</li>
-                                        <li>Documentation</li>
-                                        <li>Client Relations</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="tech-stack">
-                                <h3>Technology Stack</h3>
-                                <div class="tech-badges">
-                                    <span class="tech-badge">ThingsBoard</span>
-                                    <span class="tech-badge">MQTT</span>
-                                    <span class="tech-badge">ESP32</span>
-                                    <span class="tech-badge">React Native</span>
-                                    <span class="tech-badge">Li-ion BMS</span>
-                                </div>
-                            </div>
+        <!-- Slide 6: Timeline -->
+        <section class="slide" id="slide6">
+            <div class="slide-content">
+                <h2>4-Week Development Timeline</h2>
+                <div class="timeline">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-item" data-week="1">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Week 1: Foundation Setup</h3>
+                            <p>Dashboard UI, authentication, basic upload</p>
                         </div>
-                        <div class="assumptions-section">
-                            <h2>Key Assumptions</h2>
-                            <div class="assumptions-list">
-                                <div class="assumption-item">
-                                    <div class="assumption-icon">💰</div>
-                                    <p>Average blended labour rate ≈ 100 SAR/hour (senior engineers) to stay within budget cap</p>
-                                </div>
-                                <div class="assumption-item">
-                                    <div class="assumption-icon">⚡</div>
-                                    <p>Hardware components (solar, battery, inverter) consume ≈15,500 SAR; remainder covers engineering</p>
-                                </div>
-                                <div class="assumption-item">
-                                    <div class="assumption-icon">🔄</div>
-                                    <p>Parallel development: Hardware/firmware overlap; app development starts Week 5</p>
-                                </div>
-                                <div class="assumption-item">
-                                    <div class="assumption-icon">🛡️</div>
-                                    <p>Two-week buffer (Weeks 11-12) absorbs delays without overrunning 12-week ceiling</p>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="timeline-item" data-week="2">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Week 2: AI Integration</h3>
+                            <p>YOLO model deployed, damage detection working</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-week="3">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Week 3: Report System</h3>
+                            <p>PDF generation, email notifications functional</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-week="4">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Week 4: Testing & Launch</h3>
+                            <p>Complete system testing, deployment, training</p>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Slide 6: Next Steps & Contact -->
-            <div class="slide" id="slide-5">
-                <div class="slide-content contact-slide">
-                    <h1>Next Steps & Partnership</h1>
-                    <div class="contact-layout">
-                        <div class="next-steps">
-                            <h2>Immediate Actions</h2>
-                            <div class="steps-timeline">
-                                <div class="step-item">
-                                    <div class="step-number">1</div>
-                                    <div class="step-content">
-                                        <h3>Project Approval</h3>
-                                        <p>Review and approve project scope, timeline, and budget allocation</p>
-                                    </div>
-                                </div>
-                                <div class="step-item">
-                                    <div class="step-number">2</div>
-                                    <div class="step-content">
-                                        <h3>Contract Finalization</h3>
-                                        <p>Execute service agreement and establish payment milestones</p>
-                                    </div>
-                                </div>
-                                <div class="step-item">
-                                    <div class="step-number">3</div>
-                                    <div class="step-content">
-                                        <h3>Team Mobilization</h3>
-                                        <p>Assign dedicated team members and begin Week 1 hardware design</p>
-                                    </div>
-                                </div>
-                            </div>
+        <!-- Slide 7: Payment Schedule -->
+        <section class="slide" id="slide7">
+            <div class="slide-content">
+                <h2>Payment Schedule</h2>
+                <div class="payment-cards">
+                    <div class="payment-card" data-delay="0">
+                        <div class="payment-number">1</div>
+                        <h3>Project Start + UI Development</h3>
+                        <div class="payment-amount">$2,000</div>
+                        <div class="payment-percentage">40%</div>
+                    </div>
+                    <div class="payment-card" data-delay="200">
+                        <div class="payment-number">2</div>
+                        <h3>AI Integration Complete</h3>
+                        <div class="payment-amount">$2,000</div>
+                        <div class="payment-percentage">40%</div>
+                    </div>
+                    <div class="payment-card" data-delay="400">
+                        <div class="payment-number">3</div>
+                        <h3>Final Testing & Deployment</h3>
+                        <div class="payment-amount">$1,000</div>
+                        <div class="payment-percentage">20%</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Performance Stats -->
+        <section class="slide" id="slide8">
+            <div class="slide-content">
+                <h2>Performance Guarantees</h2>
+                <div class="stats-grid">
+                    <div class="stat-card" data-delay="0">
+                        <div class="stat-number" data-target="85">0</div>
+                        <div class="stat-symbol">%</div>
+                        <div class="stat-label">AI Detection Accuracy</div>
+                    </div>
+                    <div class="stat-card" data-delay="200">
+                        <div class="stat-number" data-target="3">0</div>
+                        <div class="stat-symbol">s</div>
+                        <div class="stat-label">Processing Time</div>
+                    </div>
+                    <div class="stat-card" data-delay="400">
+                        <div class="stat-number" data-target="99">0</div>
+                        <div class="stat-symbol">%</div>
+                        <div class="stat-label">System Uptime</div>
+                    </div>
+                    <div class="stat-card" data-delay="600">
+                        <div class="stat-number" data-target="10">0</div>
+                        <div class="stat-symbol">x</div>
+                        <div class="stat-label">Speed Improvement</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Business Value -->
+        <section class="slide" id="slide9">
+            <div class="slide-content">
+                <h2>Business Value Demonstration</h2>
+                <div class="value-propositions">
+                    <div class="value-card">
+                        <h3>🚀 Rapid Implementation</h3>
+                        <p>Get your MVP live in just 4 weeks with proven technology stack</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>💰 Cost Effective</h3>
+                        <p>Fixed $5,000 budget with no hidden costs or surprise fees</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>📈 Scalable Architecture</h3>
+                        <p>Built for growth with cloud-ready infrastructure</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>🎯 Proven Accuracy</h3>
+                        <p>85%+ detection accuracy with continuous improvement capability</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 10: Guarantees -->
+        <section class="slide" id="slide10">
+            <div class="slide-content">
+                <h2>Guarantees & Risk Mitigation</h2>
+                <div class="guarantees-grid">
+                    <div class="guarantee-box">
+                        <div class="guarantee-icon">✅</div>
+                        <h3>Quality Assurance</h3>
+                        <p>Full system testing and 30-day bug-fix guarantee</p>
+                    </div>
+                    <div class="guarantee-box">
+                        <div class="guarantee-icon">🔒</div>
+                        <h3>Security First</h3>
+                        <p>Industry-standard security practices and data protection</p>
+                    </div>
+                    <div class="guarantee-box">
+                        <div class="guarantee-icon">📞</div>
+                        <h3>Support Included</h3>
+                        <p>2 weeks of post-launch support and user training</p>
+                    </div>
+                    <div class="guarantee-box">
+                        <div class="guarantee-icon">🎯</div>
+                        <h3>Performance Promise</h3>
+                        <p>Meet all specified performance metrics or money back</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 11: Deliverables Package -->
+        <section class="slide" id="slide11">
+            <div class="slide-content">
+                <h2>Complete Deliverables Package</h2>
+                <div class="deliverables-list">
+                    <div class="deliverable-item">
+                        <div class="deliverable-icon">📱</div>
+                        <div class="deliverable-info">
+                            <h3>Web Application</h3>
+                            <p>Fully functional dashboard with responsive design</p>
                         </div>
-                        <div class="contact-info">
-                            <h2>Contact Information</h2>
-                            <div class="contact-card">
-                                <h3>OLIVE TS - IoT Division</h3>
-                                <div class="contact-details">
-                                    <p><strong>Project Manager:</strong> Available upon contract</p>
-                                    <p><strong>Technical Lead:</strong> Senior IoT Engineer</p>
-                                    <p><strong>Response Time:</strong> 24-48 hours</p>
-                                    <p><strong>Project Start:</strong> Within 1 week of approval</p>
-                                </div>
-                            </div>
-                            <div class="cta-section">
-                                <h3>Ready to Begin?</h3>
-                                <p>Let's transform Prince Sultan University's energy infrastructure with cutting-edge IoT solar technology.</p>
-                                <div class="commitment">
-                                    <p><strong>Our Commitment:</strong> On-time delivery within budget, with full technical support and documentation.</p>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="deliverable-item">
+                        <div class="deliverable-icon">🤖</div>
+                        <div class="deliverable-info">
+                            <h3>AI Model Integration</h3>
+                            <p>Deployed YOLO model with API endpoints</p>
+                        </div>
+                    </div>
+                    <div class="deliverable-item">
+                        <div class="deliverable-icon">📖</div>
+                        <div class="deliverable-info">
+                            <h3>Documentation</h3>
+                            <p>Complete technical documentation and user guides</p>
+                        </div>
+                    </div>
+                    <div class="deliverable-item">
+                        <div class="deliverable-icon">☁️</div>
+                        <div class="deliverable-info">
+                            <h3>Cloud Deployment</h3>
+                            <p>Production-ready deployment on your preferred cloud</p>
+                        </div>
+                    </div>
+                    <div class="deliverable-item">
+                        <div class="deliverable-icon">🎓</div>
+                        <div class="deliverable-info">
+                            <h3>Training & Handover</h3>
+                            <p>Complete system training and knowledge transfer</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Slide Counter -->
-        <div class="slide-counter">
-            <span id="currentSlide">1</span> / <span id="totalSlides">6</span>
-        </div>
+        <!-- Slide 12: Call to Action -->
+        <section class="slide slide-cta" id="slide12">
+            <div class="slide-content">
+                <h2>Ready to Get Started?</h2>
+                <p class="cta-subtitle">Transform your vehicle damage assessment process with AI</p>
+                <div class="cta-buttons">
+                    <button class="btn btn--primary btn--lg cta-button">Accept Proposal - $5,000</button>
+                    <button class="btn btn--outline btn--lg">Schedule Discussion</button>
+                </div>
+                <div class="contact-info">
+                    <p>Questions? Let's discuss your specific requirements</p>
+                </div>
+            </div>
+        </section>
+
     </div>
 
     <script src="app.js"></script>
