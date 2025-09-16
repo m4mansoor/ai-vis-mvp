@@ -1,653 +1,170 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Vehicle Damage Detection MVP</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            text-align: center;
-            padding: 80px 40px;
-            border-radius: 20px;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: headerGlow 8s ease-in-out infinite;
-        }
-
-        @keyframes headerGlow {
-            0%, 100% { transform: scale(0.8) rotate(0deg); }
-            50% { transform: scale(1.2) rotate(180deg); }
-        }
-
-        .header h1 {
-            font-size: 3.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header .subtitle {
-            font-size: 1.5rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Sections */
-        .section {
-            background: white;
-            margin: 40px 0;
-            padding: 50px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            opacity: 0;
-            transform: translateY(50px);
-            animation: slideInUp 0.8s ease-out forwards;
-        }
-
-        .section:nth-child(1) { animation-delay: 0.1s; }
-        .section:nth-child(2) { animation-delay: 0.2s; }
-        .section:nth-child(3) { animation-delay: 0.3s; }
-        .section:nth-child(4) { animation-delay: 0.4s; }
-        .section:nth-child(5) { animation-delay: 0.5s; }
-
-        @keyframes slideInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .section:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
-        }
-
-        .section h2 {
-            color: #2c3e50;
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            border-left: 5px solid #3498db;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .section h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 20px;
-            width: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #3498db, #2ecc71);
-            animation: underlineExpand 1s ease-out 0.5s forwards;
-        }
-
-        @keyframes underlineExpand {
-            to { width: 200px; }
-        }
-
-        /* Feature Cards Grid */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-
-        .feature {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .feature:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: #3498db;
-            box-shadow: 0 20px 40px rgba(52, 152, 219, 0.2);
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        }
-
-        .feature h3 {
-            color: #2c3e50;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-
-        .feature p {
-            color: #7f8c8d;
-            line-height: 1.6;
-        }
-
-        /* Scope Grid */
-        .scope-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin: 30px 0;
-        }
-
-        .scope-item {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 30px;
-            border-radius: 15px;
-            border-left: 5px solid #3498db;
-            transition: all 0.3s ease;
-        }
-
-        .scope-item:hover {
-            transform: translateX(10px);
-            border-left-color: #2ecc71;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .scope-item h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-
-        .scope-item ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .scope-item li {
-            padding: 8px 0;
-            color: #34495e;
-            position: relative;
-            padding-left: 25px;
-        }
-
-        .scope-item li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: #27ae60;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        /* Tech Stack */
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin: 30px 0;
-        }
-
-        .tech-item {
-            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: scale(0);
-            animation: techPop 0.5s ease-out forwards;
-        }
-
-        .tech-item:nth-child(1) { animation-delay: 0.1s; }
-        .tech-item:nth-child(2) { animation-delay: 0.2s; }
-        .tech-item:nth-child(3) { animation-delay: 0.3s; }
-
-        @keyframes techPop {
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .tech-item:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 10px 25px rgba(108, 92, 231, 0.3);
-        }
-
-        /* Table */
-        .table-container {
-            overflow-x: auto;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            margin: 40px 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 15px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #ecf0f1;
-            transition: all 0.3s ease;
-        }
-
-        tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-
-        tr:hover {
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-            transform: scale(1.01);
-        }
-
-        /* Timeline */
-        .timeline {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-
-        .timeline-item {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            border: 3px solid #3498db;
-            text-align: center;
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .timeline-item:hover {
-            transform: translateY(-10px) scale(1.05);
-            border-color: #2ecc71;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
-        .timeline-item h3 {
-            color: #3498db;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-        }
-
-        .timeline-item h4 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        /* Payment Cards */
-        .payment-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-
-        .payment-card {
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-            color: white;
-            padding: 40px 30px;
-            border-radius: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        }
-
-        .payment-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-        }
-
-        .payment-card h3 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-        }
-
-        .payment-card .amount {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        /* Stats Grid */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-
-        .stat {
-            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
-            color: white;
-            padding: 40px 20px;
-            border-radius: 15px;
-            text-align: center;
-            transition: all 0.4s ease;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        }
-
-        .stat:hover {
-            transform: translateY(-15px) scale(1.05);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-        }
-
-        .stat-number {
-            font-size: 3.5rem;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        /* Value Grid */
-        .value-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-
-        .value-item {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-
-        .value-item:hover {
-            border-color: #27ae60;
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(39, 174, 96, 0.2);
-        }
-
-        .value-item .icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .value-item h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        /* CTA Section */
-        .cta {
-            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
-            color: white;
-            text-align: center;
-            padding: 60px 40px;
-            border-radius: 20px;
-            margin: 40px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            animation: ctaGlow 6s ease-in-out infinite;
-        }
-
-        @keyframes ctaGlow {
-            0%, 100% { transform: scale(0.8) rotate(0deg); }
-            50% { transform: scale(1.2) rotate(180deg); }
-        }
-
-        .cta h2 {
-            border: none;
-            padding: 0;
-            margin-bottom: 30px;
-            color: white;
-            position: relative;
-            z-index: 1;
-        }
-
-        .cta p {
-            font-size: 1.2rem;
-            margin: 20px 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 40px 20px;
-            }
-
-            .header h1 {
-                font-size: 2.5rem;
-            }
-            
-            .section {
-                padding: 30px 20px;
-            }
-            
-            .section h2 {
-                font-size: 2rem;
-            }
-            
-            .features,
-            .scope-grid,
-            .timeline,
-            .payment-grid,
-            .stats,
-            .value-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stat-number {
-                font-size: 2.5rem;
-            }
-
-            .payment-card .amount {
-                font-size: 2rem;
-            }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Loading animation */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        body {
-            animation: fadeIn 1s ease-in;
-        }
-    </style>
+    <title>AI Vehicle Damage Detection MVP - Professional Presentation</title>
+    <meta name="description" content="AI-powered vehicle damage detection system with 92% accuracy. Complete MVP solution for $5,000 in 4 weeks.">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>AI Vehicle Damage Detection MVP</h1>
-            <p class="subtitle">Phase 1 Proof of Concept - USD 5,000</p>
-        </div>
-
-        <!-- Executive Summary -->
-        <div class="section">
-            <h2>Executive Summary</h2>
-            <p>Complete AI-powered vehicle damage detection system</p>
-            
-            <div class="features">
-                <div class="feature">
-                    <h3>🖥️ Web Dashboard</h3>
-                    <p>Secure login and intuitive image upload interface</p>
-                </div>
-                <div class="feature">
-                    <h3>🤖 AI-Powered Detection</h3>
-                    <p>YOLO model trained on vehicle damage dataset</p>
-                </div>
-                <div class="feature">
-                    <h3>⚡ Real-Time Results</h3>
-                    <p>Instant damage detection and visualization</p>
-                </div>
-                <div class="feature">
-                    <h3>📄 Automated Reporting</h3>
-                    <p>PDF reports emailed to admin and vehicle owner</p>
-                </div>
-                <div class="feature">
-                    <h3>🔄 Complete Workflow</h3>
-                    <p>End-to-end demonstration of damage documentation process</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- MVP Scope -->
-        <div class="section">
-            <h2>MVP Scope &amp; Deliverables</h2>
-            
-            <div class="scope-grid">
-                <div class="scope-item">
-                    <h3>🎨 Frontend Development</h3>
-                    <ul>
-                        <li>Responsive web dashboard</li>
-                        <li>User authentication system</li>
-                        <li>Image upload interface</li>
-                        <li>Results visualization</li>
-                    </ul>
-                </div>
-                
-                <div class="scope-item">
-                    <h3>🧠 AI Integration</h3>
-                    <ul>
-                        <li>YOLO model deployment</li>
-                        <li>Image processing pipeline</li>
-                        <li>Damage detection API</li>
-                        <li>Confidence scoring</li>
-                    </ul>
-                </div>
-                
-                <div class="scope-item">
-                    <h3>🔧 Backend Services</h3>
-                    <ul>
-                        <li>Database design &amp; setup</li>
-                        <li>API endpoints</li>
-                        <li>User management</li>
-                        <li>File storage system</li>
-                    </ul>
-                </div>
-                
-                <div class="scope-item">
-                    <h3>📈 Automation &amp; Reports</h3>
-                    <ul>
-                        <li>PDF report generation</li>
-                        <li>Email notification system</li>
-                        <li>Dashboard analytics</li>
-                        <li>Data export features</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Technical Architecture -->
-        <div class="section">
-            <h2>Technical Architecture</h2>
-            
-            <div class="scope-grid">
-                <div class="scope-item">
-                    <h3>Frontend</h3>
-                    <div class="tech-stack">
-                        <span class="tech-item">React.js</span>
-                        <span class="tech-item">Bootstrap</span>
-                        <span class="tech-item">JWT Auth</span>
+    <!-- Header with animated background -->
+    <header class="hero-section">
+        <div class="hero-content">
+            <div class="animated-bg"></div>
+            <div class="container">
+                <h1 class="hero-title">AI Vehicle Damage Detection MVP</h1>
+                <p class="hero-subtitle">Phase 1 Proof of Concept - USD $5,000</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">92%</span>
+                        <span class="stat-label">AI Detection Accuracy</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">3-5s</span>
+                        <span class="stat-label">Processing Time</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">4</span>
+                        <span class="stat-label">Weeks Delivery</span>
                     </div>
                 </div>
-                
-                <div class="scope-item">
-                    <h3>Backend</h3>
-                    <div class="tech-stack">
-                        <span class="tech-item">Node.js</span>
-                        <span class="tech-item">MongoDB</span>
-                        <span class="tech-item">Express</span>
-                    </div>
+                <button class="btn btn--primary btn--lg cta-button">Get Started Today</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Executive Summary -->
+    <section class="section" id="executive-summary">
+        <div class="container">
+            <h2 class="section-title">Executive Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-text">
+                    <p class="lead-text">Transform your vehicle inspection process with cutting-edge AI technology. Our YOLO-based damage detection system delivers 92% accuracy in identifying 8 different types of vehicle damage in real-time.</p>
+                    <ul class="feature-list">
+                        <li>✅ Web Dashboard with secure authentication</li>
+                        <li>✅ YOLO AI model for damage detection</li>
+                        <li>✅ Real-time results with confidence scores</li>
+                        <li>✅ Automated PDF report generation</li>
+                        <li>✅ Email notification system</li>
+                    </ul>
                 </div>
-                
-                <div class="scope-item">
-                    <h3>AI Model</h3>
-                    <div class="tech-stack">
-                        <span class="tech-item">YOLO v8</span>
-                        <span class="tech-item">Python</span>
-                        <span class="tech-item">Flask API</span>
+                <div class="demo-showcase">
+                    <div class="demo-image">
+                        <img src="https://pplx-res.cloudinary.com/image/upload/v1755108186/pplx_project_search_images/9967b5d32f72d44228738939c512c85f0096a4cc.png" alt="AI Damage Detection System Demo showing car part detection and damage assessment" class="showcase-img">
+                        <div class="demo-overlay">
+                            <span class="demo-badge">Live Demo</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Budget Breakdown -->
-        <div class="section">
-            <h2>Budget Breakdown</h2>
-            <p>Total: 125 hours × $40/hr = $5,000</p>
-            
-            <div class="table-container">
-                <table>
+    <!-- AI Capabilities -->
+    <section class="section section--alt" id="ai-capabilities">
+        <div class="container">
+            <h2 class="section-title">AI Detection Capabilities</h2>
+            <p class="section-subtitle">Our advanced YOLO model can detect and assess 8 different types of vehicle damage</p>
+            <div class="capabilities-grid">
+                <div class="capability-card">
+                    <div class="capability-icon">🚪</div>
+                    <h3>Damaged Door</h3>
+                    <p>Dents, scratches, and structural damage to vehicle doors</p>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">🪟</div>
+                    <h3>Damaged Window</h3>
+                    <p>Cracks, chips, and complete window damage detection</p>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">💡</div>
+                    <h3>Damaged Headlight</h3>
+                    <p>Broken, cracked, or misaligned headlight assessment</p>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">🪞</div>
+                    <h3>Damaged Mirror</h3>
+                    <p>Side mirror damage including cracks and detachment</p>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">⚪</div>
+                    <h3>Dents</h3>
+                    <p>Body dents of various sizes across vehicle panels</p>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">🚗</div>
+                    <h3>Damaged Hood</h3>
+                    <p>Hood damage including dents, scratches, and alignment</p>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">🔧</div>
+                    <h3>Damaged Bumper</h3>
+                    <p>Front and rear bumper damage assessment</p>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">🪟</div>
+                    <h3>Damaged Windshield</h3>
+                    <p>Windshield cracks, chips, and visibility obstruction</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Architecture -->
+    <section class="section" id="technical-architecture">
+        <div class="container">
+            <h2 class="section-title">Technical Architecture</h2>
+            <div class="architecture-showcase">
+                <div class="architecture-images">
+                    <div class="arch-image">
+                        <img src="https://pplx-res.cloudinary.com/image/upload/v1755615468/pplx_project_search_images/9d906b8871bc9ffb8505cca16127c7490fb3a0b6.png" alt="Car Damage Detection API Interface with 88% confidence detection" class="tech-img">
+                        <p class="image-caption">Real-time AI Detection Interface</p>
+                    </div>
+                    <div class="arch-image">
+                        <img src="https://pplx-res.cloudinary.com/image/upload/v1754751007/pplx_project_search_images/03ddd9e083364c781a5b083b3046fbfee7559e50.png" alt="Mobile Car Inspection Dashboard UI showing vehicle details and damage assessment" class="tech-img">
+                        <p class="image-caption">Mobile Dashboard Interface</p>
+                    </div>
+                </div>
+                <div class="architecture-details">
+                    <div class="tech-stack">
+                        <h3>Technology Stack</h3>
+                        <div class="tech-item">
+                            <strong>AI/ML:</strong> YOLO v8 for object detection
+                        </div>
+                        <div class="tech-item">
+                            <strong>Backend:</strong> Python/FastAPI with GPU acceleration
+                        </div>
+                        <div class="tech-item">
+                            <strong>Frontend:</strong> React.js responsive web dashboard
+                        </div>
+                        <div class="tech-item">
+                            <strong>Database:</strong> PostgreSQL with image storage
+                        </div>
+                        <div class="tech-item">
+                            <strong>Reports:</strong> PDF generation and email automation
+                        </div>
+                        <div class="tech-item">
+                            <strong>Security:</strong> JWT authentication and data encryption
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Budget Breakdown -->
+    <section class="section section--alt" id="budget">
+        <div class="container">
+            <h2 class="section-title">Budget Breakdown - $5,000 Total</h2>
+            <div class="budget-table-container">
+                <table class="budget-table">
                     <thead>
                         <tr>
                             <th>Task</th>
                             <th>Hours</th>
-                            <th>Rate</th>
+                            <th>Rate/Hour</th>
                             <th>Cost</th>
                         </tr>
                     </thead>
@@ -689,140 +206,270 @@
                             <td>$400</td>
                         </tr>
                         <tr>
-                            <td>Testing &amp; Bug Fixing</td>
+                            <td>Testing & Bug Fixing</td>
                             <td>13</td>
                             <td>$40</td>
                             <td>$520</td>
                         </tr>
                         <tr>
-                            <td>Deployment &amp; User Training</td>
+                            <td>Deployment & User Training</td>
                             <td>15</td>
                             <td>$40</td>
                             <td>$600</td>
                         </tr>
-                        <tr style="background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%); color: white; font-weight: bold;">
-                            <td><strong>TOTAL</strong></td>
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td><strong>Total</strong></td>
                             <td><strong>125</strong></td>
                             <td><strong>$40</strong></td>
                             <td><strong>$5,000</strong></td>
                         </tr>
-                    </tbody>
+                    </tfoot>
                 </table>
             </div>
         </div>
+    </section>
 
-        <!-- Timeline -->
-        <div class="section">
-            <h2>4-Week Development Timeline</h2>
-            
-            <div class="timeline">
+    <!-- Timeline -->
+    <section class="section" id="timeline">
+        <div class="container">
+            <h2 class="section-title">4-Week Development Timeline</h2>
+            <div class="timeline-container">
                 <div class="timeline-item">
-                    <h3>Week 1</h3>
-                    <h4>Foundation Setup</h4>
-                    <p>Dashboard UI, authentication, basic upload</p>
+                    <div class="timeline-marker">1</div>
+                    <div class="timeline-content">
+                        <h3>Week 1 - Foundation Setup</h3>
+                        <p>Dashboard UI, authentication, basic upload</p>
+                        <div class="timeline-deliverables">
+                            <span class="deliverable">✅ User Interface</span>
+                            <span class="deliverable">✅ Authentication</span>
+                            <span class="deliverable">✅ File Upload</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="timeline-item">
-                    <h3>Week 2</h3>
-                    <h4>AI Integration</h4>
-                    <p>YOLO model deployed, damage detection working</p>
+                    <div class="timeline-marker">2</div>
+                    <div class="timeline-content">
+                        <h3>Week 2 - AI Integration</h3>
+                        <p>YOLO model deployed, damage detection working</p>
+                        <div class="timeline-deliverables">
+                            <span class="deliverable">🧠 AI Model</span>
+                            <span class="deliverable">🎯 Detection API</span>
+                            <span class="deliverable">📊 Results Display</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="timeline-item">
-                    <h3>Week 3</h3>
-                    <h4>Report System</h4>
-                    <p>PDF generation, email notifications functional</p>
+                    <div class="timeline-marker">3</div>
+                    <div class="timeline-content">
+                        <h3>Week 3 - Report System</h3>
+                        <p>PDF generation, email notifications functional</p>
+                        <div class="timeline-deliverables">
+                            <span class="deliverable">📄 PDF Reports</span>
+                            <span class="deliverable">📧 Email System</span>
+                            <span class="deliverable">💾 Data Storage</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="timeline-item">
-                    <h3>Week 4</h3>
-                    <h4>Testing &amp; Launch</h4>
-                    <p>Complete system testing, deployment, training</p>
+                    <div class="timeline-marker">4</div>
+                    <div class="timeline-content">
+                        <h3>Week 4 - Testing & Launch</h3>
+                        <p>Complete system testing, deployment, training</p>
+                        <div class="timeline-deliverables">
+                            <span class="deliverable">🧪 System Testing</span>
+                            <span class="deliverable">🚀 Deployment</span>
+                            <span class="deliverable">📚 User Training</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Payment Schedule -->
-        <div class="section">
-            <h2>Payment Schedule</h2>
-            
-            <div class="payment-grid">
+    <!-- Payment Schedule -->
+    <section class="section section--alt" id="payment">
+        <div class="container">
+            <h2 class="section-title">Payment Schedule</h2>
+            <div class="payment-cards">
                 <div class="payment-card">
-                    <h3>Payment 1</h3>
-                    <div class="amount">$2,000</div>
-                    <p>Project Start + UI Development</p>
-                    <p><strong>40%</strong></p>
+                    <div class="payment-header">
+                        <h3>Payment 1</h3>
+                        <div class="payment-amount">$2,000</div>
+                        <div class="payment-percentage">40%</div>
+                    </div>
+                    <div class="payment-description">
+                        <p><strong>Project Start + UI Development</strong></p>
+                        <p>Kickoff meeting, dashboard development, and basic authentication system</p>
+                    </div>
                 </div>
                 <div class="payment-card">
-                    <h3>Payment 2</h3>
-                    <div class="amount">$2,000</div>
-                    <p>AI Integration Complete</p>
-                    <p><strong>40%</strong></p>
+                    <div class="payment-header">
+                        <h3>Payment 2</h3>
+                        <div class="payment-amount">$2,000</div>
+                        <div class="payment-percentage">40%</div>
+                    </div>
+                    <div class="payment-description">
+                        <p><strong>AI Integration Complete</strong></p>
+                        <p>YOLO model deployed, damage detection functional, and report system ready</p>
+                    </div>
                 </div>
                 <div class="payment-card">
-                    <h3>Payment 3</h3>
-                    <div class="amount">$1,000</div>
-                    <p>Final Testing &amp; Deployment</p>
-                    <p><strong>20%</strong></p>
+                    <div class="payment-header">
+                        <h3>Payment 3</h3>
+                        <div class="payment-amount">$1,000</div>
+                        <div class="payment-percentage">20%</div>
+                    </div>
+                    <div class="payment-description">
+                        <p><strong>Final Testing & Deployment</strong></p>
+                        <p>Complete testing, bug fixes, deployment, and user training sessions</p>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Performance Guarantees -->
-        <div class="section">
-            <h2>Performance Guarantees</h2>
-            
-            <div class="stats">
-                <div class="stat">
-                    <span class="stat-number">85%</span>
-                    <span>AI Detection Accuracy</span>
+    <!-- Performance Guarantees -->
+    <section class="section" id="guarantees">
+        <div class="container">
+            <h2 class="section-title">Performance Guarantees</h2>
+            <div class="guarantees-showcase">
+                <div class="guarantee-image">
+                    <img src="https://pplx-res.cloudinary.com/image/upload/v1755841638/pplx_project_search_images/eec09363ad6cfbab8635fc5e1fd9dc217a74c986.png" alt="Futuristic AI dashboard with diagnostic data and system monitoring" class="guarantee-img">
                 </div>
-                <div class="stat">
-                    <span class="stat-number">3-5s</span>
-                    <span>Processing Time</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">99%</span>
-                    <span>System Uptime</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">4</span>
-                    <span>Weeks Delivery</span>
+                <div class="guarantees-list">
+                    <div class="guarantee-item">
+                        <div class="guarantee-metric">92%</div>
+                        <div class="guarantee-text">
+                            <h4>Detection Accuracy</h4>
+                            <p>Minimum 92% accuracy in damage detection across all vehicle types</p>
+                        </div>
+                    </div>
+                    <div class="guarantee-item">
+                        <div class="guarantee-metric">99%</div>
+                        <div class="guarantee-text">
+                            <h4>System Uptime</h4>
+                            <p>Guaranteed 99% system availability with robust cloud infrastructure</p>
+                        </div>
+                    </div>
+                    <div class="guarantee-item">
+                        <div class="guarantee-metric">&lt;5s</div>
+                        <div class="guarantee-text">
+                            <h4>Processing Speed</h4>
+                            <p>Maximum 5-second processing time for damage detection results</p>
+                        </div>
+                    </div>
+                    <div class="guarantee-item">
+                        <div class="guarantee-metric">30</div>
+                        <div class="guarantee-text">
+                            <h4>Day Support</h4>
+                            <p>30 days of free technical support and system optimization post-launch</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Business Value -->
-        <div class="section">
-            <h2>Business Value Demonstration</h2>
-            
+    <!-- Business Value -->
+    <section class="section section--alt" id="business-value">
+        <div class="container">
+            <h2 class="section-title">Business Value Propositions</h2>
             <div class="value-grid">
-                <div class="value-item">
-                    <span class="icon">🚀</span>
-                    <h3>Rapid Implementation</h3>
-                    <p>Get your MVP live in just 4 weeks with proven technology stack</p>
+                <div class="value-card">
+                    <div class="value-icon">⏱️</div>
+                    <h3>Time Reduction</h3>
+                    <p>Reduce vehicle inspection time from 30 minutes to under 5 minutes</p>
+                    <div class="value-metric">85% faster</div>
                 </div>
-                <div class="value-item">
-                    <span class="icon">💰</span>
-                    <h3>Cost Effective</h3>
-                    <p>Fixed $5,000 budget with no hidden costs or surprise fees</p>
+                <div class="value-card">
+                    <div class="value-icon">💰</div>
+                    <h3>Cost Savings</h3>
+                    <p>Lower operational costs with automated damage assessment</p>
+                    <div class="value-metric">60% savings</div>
                 </div>
-                <div class="value-item">
-                    <span class="icon">📈</span>
-                    <h3>Scalable Architecture</h3>
-                    <p>Built for growth with cloud-ready infrastructure</p>
+                <div class="value-card">
+                    <div class="value-icon">📈</div>
+                    <h3>Accuracy Improvement</h3>
+                    <p>Eliminate human error with consistent AI-powered detection</p>
+                    <div class="value-metric">+40% accuracy</div>
                 </div>
-                <div class="value-item">
-                    <span class="icon">🎯</span>
-                    <h3>Proven Accuracy</h3>
-                    <p>85%+ detection accuracy with continuous improvement capability</p>
+                <div class="value-card">
+                    <div class="value-icon">📱</div>
+                    <h3>Digital Transformation</h3>
+                    <p>Modern web-based solution accessible from any device</p>
+                    <div class="value-metric">100% digital</div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- CTA -->
-        <div class="cta">
-            <h2>Ready to Get Started?</h2>
-            <p><strong>Transform your vehicle damage assessment process with AI</strong></p>
-            <p>Questions? Let's discuss your specific requirements</p>
+    <!-- Final CTA -->
+    <section class="section cta-section" id="cta">
+        <div class="container">
+            <div class="cta-content">
+                <img src="https://pplx-res.cloudinary.com/image/upload/v1755689994/pplx_project_search_images/2158f660695c258190ee0413e5cf32d572905f3d.png" alt="AI-powered damage assessment interface on digital tablet" class="cta-image">
+                <div class="cta-text">
+                    <h2>Ready to Transform Your Vehicle Inspection Process?</h2>
+                    <p class="cta-description">Join the future of automated damage detection. Get your MVP deployed in just 4 weeks with our proven AI technology.</p>
+                    <div class="cta-features">
+                        <div class="cta-feature">✅ 92% AI Detection Accuracy</div>
+                        <div class="cta-feature">✅ 4-Week Delivery Guarantee</div>
+                        <div class="cta-feature">✅ $5,000 Fixed Price</div>
+                        <div class="cta-feature">✅ 30-Day Support Included</div>
+                    </div>
+                    <div class="cta-buttons">
+                        <button class="btn btn--primary btn--lg">Start Your Project</button>
+                        <button class="btn btn--outline btn--lg">Schedule Demo</button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>AI Vehicle Damage Detection MVP</h4>
+                    <p>Professional AI solution for automated vehicle damage assessment</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Key Features</h4>
+                    <ul>
+                        <li>YOLO AI Detection</li>
+                        <li>Real-time Processing</li>
+                        <li>PDF Report Generation</li>
+                        <li>Email Notifications</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Technical Specs</h4>
+                    <ul>
+                        <li>92% Detection Accuracy</li>
+                        <li>3-5s Processing Time</li>
+                        <li>8 Damage Types</li>
+                        <li>99% System Uptime</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Project Details</h4>
+                    <ul>
+                        <li>$5,000 Fixed Price</li>
+                        <li>4-Week Delivery</li>
+                        <li>30-Day Support</li>
+                        <li>Ready to Deploy</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AI Vehicle Damage Detection MVP. Professional presentation for client engagement.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
 </body>
 </html>
