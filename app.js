@@ -1,518 +1,434 @@
-// Presentation Application JavaScript
-class PresentationApp {
-    constructor() {
-        this.currentSlide = 0;
-        this.totalSlides = 6;
-        this.slides = document.querySelectorAll('.slide');
-        this.indicators = document.querySelectorAll('.indicator');
-        this.progressFill = document.querySelector('.progress-fill');
-        this.slideCounter = {
-            current: document.getElementById('currentSlide'),
-            total: document.getElementById('totalSlides')
-        };
-        
-        this.init();
-    }
+// AI Vehicle Damage Detection MVP Presentation JavaScript
 
-    init() {
-        this.setupEventListeners();
-        this.updateSlideCounter();
-        this.initializeChart();
-        this.updateProgressBar();
-    }
-
-    setupEventListeners() {
-        // Navigation buttons
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        
-        prevBtn.addEventListener('click', () => this.previousSlide());
-        nextBtn.addEventListener('click', () => this.nextSlide());
-        
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            switch(e.key) {
-                case 'ArrowLeft':
-                case 'ArrowUp':
-                    e.preventDefault();
-                    this.previousSlide();
-                    break;
-                case 'ArrowRight':
-                case 'ArrowDown':
-                case ' ':
-                    e.preventDefault();
-                    this.nextSlide();
-                    break;
-                case 'Home':
-                    e.preventDefault();
-                    this.goToSlide(0);
-                    break;
-                case 'End':
-                    e.preventDefault();
-                    this.goToSlide(this.totalSlides - 1);
-                    break;
-            }
-        });
-        
-        // Slide indicators
-        this.indicators.forEach((indicator, index) => {
-            indicator.addEventListener('click', () => this.goToSlide(index));
-        });
-        
-        // Touch/swipe support
-        let startX = null;
-        let startY = null;
-        
-        document.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-        });
-        
-        document.addEventListener('touchend', (e) => {
-            if (!startX || !startY) return;
-            
-            const endX = e.changedTouches[0].clientX;
-            const endY = e.changedTouches[0].clientY;
-            
-            const deltaX = startX - endX;
-            const deltaY = startY - endY;
-            
-            // Horizontal swipe should be more significant than vertical
-            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
-                if (deltaX > 0) {
-                    this.nextSlide();
-                } else {
-                    this.previousSlide();
-                }
-            }
-            
-            startX = null;
-            startY = null;
-        });
-    }
-
-    nextSlide() {
-        if (this.currentSlide < this.totalSlides - 1) {
-            this.goToSlide(this.currentSlide + 1);
-        }
-    }
-
-    previousSlide() {
-        if (this.currentSlide > 0) {
-            this.goToSlide(this.currentSlide - 1);
-        }
-    }
-
-    goToSlide(slideIndex) {
-        if (slideIndex < 0 || slideIndex >= this.totalSlides) return;
-        
-        // Remove active class from current slide and indicator
-        this.slides[this.currentSlide].classList.remove('active');
-        this.indicators[this.currentSlide].classList.remove('active');
-        
-        // Add prev class to current slide for animation
-        if (slideIndex > this.currentSlide) {
-            this.slides[this.currentSlide].classList.add('prev');
-        }
-        
-        // Update current slide
-        this.currentSlide = slideIndex;
-        
-        // Add active class to new slide and indicator
-        this.slides[this.currentSlide].classList.add('active');
-        this.indicators[this.currentSlide].classList.add('active');
-        
-        // Remove prev class after animation
-        setTimeout(() => {
-            this.slides.forEach(slide => slide.classList.remove('prev'));
-        }, 600);
-        
-        // Update UI elements
-        this.updateSlideCounter();
-        this.updateProgressBar();
-        this.updateNavigationButtons();
-        
-        // Initialize chart if we're on the budget slide
-        if (slideIndex === 2) {
-            setTimeout(() => {
-                this.initializeChart();
-            }, 300);
-        }
-    }
-
-    updateSlideCounter() {
-        this.slideCounter.current.textContent = this.currentSlide + 1;
-        this.slideCounter.total.textContent = this.totalSlides;
-    }
-
-    updateProgressBar() {
-        const progress = ((this.currentSlide + 1) / this.totalSlides) * 100;
-        this.progressFill.style.width = `${progress}%`;
-    }
-
-    updateNavigationButtons() {
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        
-        prevBtn.disabled = this.currentSlide === 0;
-        nextBtn.disabled = this.currentSlide === this.totalSlides - 1;
-    }
-
-    initializeChart() {
-        const canvas = document.getElementById('budgetChart');
-        if (!canvas || canvas.chart) return; // Prevent duplicate initialization
-        
-        const ctx = canvas.getContext('2d');
-        
-        // Budget data
-        const budgetData = {
-            labels: ['Hardware Components', 'Engineering Labor', 'Contingency'],
-            datasets: [{
-                data: [15500, 21000, 3500],
-                backgroundColor: ['#1FB8CD', '#FFC185', '#B4413C'],
-                borderColor: ['#1FB8CD', '#FFC185', '#B4413C'],
-                borderWidth: 2,
-                hoverBorderWidth: 3,
-                hoverBackgroundColor: ['#1FB8CD', '#FFC185', '#B4413C']
-            }]
-        };
-
-        const config = {
-            type: 'doughnut',
-            data: budgetData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false // We have custom legend
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        borderColor: 'rgba(255, 255, 255, 0.2)',
-                        borderWidth: 1,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.parsed;
-                                const percentage = ((value / 40000) * 100).toFixed(1);
-                                return `${label}: ${value.toLocaleString()} SAR (${percentage}%)`;
-                            }
-                        }
-                    }
-                },
-                cutout: '60%',
-                animation: {
-                    animateRotate: true,
-                    duration: 1000
-                },
-                elements: {
-                    arc: {
-                        borderWidth: 0
-                    }
-                }
-            }
-        };
-
-        canvas.chart = new Chart(ctx, config);
-    }
-
-    // Method to handle window resize
-    handleResize() {
-        // Reinitialize chart on resize if we're on the budget slide
-        if (this.currentSlide === 2) {
-            const canvas = document.getElementById('budgetChart');
-            if (canvas && canvas.chart) {
-                canvas.chart.resize();
-            }
-        }
-    }
-
-    // Public method to start presentation
-    startPresentation() {
-        this.goToSlide(0);
-        
-        // Auto-advance demo (uncomment for auto-play)
-        // this.startAutoAdvance();
-    }
-
-    // Auto-advance functionality (optional)
-    startAutoAdvance(interval = 10000) {
-        this.autoAdvanceTimer = setInterval(() => {
-            if (this.currentSlide < this.totalSlides - 1) {
-                this.nextSlide();
-            } else {
-                this.stopAutoAdvance();
-            }
-        }, interval);
-    }
-
-    stopAutoAdvance() {
-        if (this.autoAdvanceTimer) {
-            clearInterval(this.autoAdvanceTimer);
-            this.autoAdvanceTimer = null;
-        }
-    }
-
-    // Fullscreen functionality
-    toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.log(`Error attempting to enable fullscreen: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    }
-}
-
-// Additional utility functions
-function formatCurrency(amount, currency = 'SAR') {
-    return new Intl.NumberFormat('en-SA', {
-        style: 'decimal',
-        minimumFractionDigits: 0
-    }).format(amount) + ' ' + currency;
-}
-
-function animateValue(element, start, end, duration = 1000) {
-    const startTime = performance.now();
-    const step = (currentTime) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const current = Math.floor(start + (end - start) * progress);
-        element.textContent = current.toLocaleString();
-        
-        if (progress < 1) {
-            requestAnimationFrame(step);
-        }
-    };
-    requestAnimationFrame(step);
-}
-
-// Enhanced interaction features
-class PresentationEnhancements {
-    constructor(app) {
-        this.app = app;
-        this.setupEnhancements();
-    }
-
-    setupEnhancements() {
-        // Add slide transition sounds (optional)
-        this.setupSounds();
-        
-        // Add mouse movement effects
-        this.setupMouseEffects();
-        
-        // Add keyboard shortcuts help
-        this.setupKeyboardHelp();
-    }
-
-    setupSounds() {
-        // Create audio context for subtle interaction sounds
-        try {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {
-            console.log('Audio context not supported');
-        }
-    }
-
-    playTransitionSound() {
-        if (!this.audioContext) return;
-        
-        // Create a subtle click sound
-        const oscillator = this.audioContext.createOscillator();
-        const gainNode = this.audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
-        gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-        
-        oscillator.start(this.audioContext.currentTime);
-        oscillator.stop(this.audioContext.currentTime + 0.1);
-    }
-
-    setupMouseEffects() {
-        // Add subtle parallax effect to background
-        document.addEventListener('mousemove', (e) => {
-            const mouseX = e.clientX / window.innerWidth;
-            const mouseY = e.clientY / window.innerHeight;
-            
-            const slides = document.querySelectorAll('.slide.active');
-            slides.forEach(slide => {
-                const moveX = (mouseX - 0.5) * 20;
-                const moveY = (mouseY - 0.5) * 20;
-                slide.style.transform = `translate(${moveX}px, ${moveY}px)`;
-            });
-        });
-    }
-
-    setupKeyboardHelp() {
-        // Show keyboard shortcuts on '?' key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '?' || e.key === 'h') {
-                this.showKeyboardHelp();
-            } else if (e.key === 'Escape') {
-                this.hideKeyboardHelp();
-            } else if (e.key === 'f' || e.key === 'F11') {
-                e.preventDefault();
-                this.app.toggleFullscreen();
-            }
-        });
-    }
-
-    showKeyboardHelp() {
-        // Create help overlay if it doesn't exist
-        if (document.getElementById('keyboard-help')) return;
-        
-        const helpOverlay = document.createElement('div');
-        helpOverlay.id = 'keyboard-help';
-        helpOverlay.innerHTML = `
-            <div class="help-content">
-                <h3>Keyboard Shortcuts</h3>
-                <div class="shortcut-grid">
-                    <div class="shortcut-item">
-                        <kbd>←</kbd> <kbd>↑</kbd> Previous slide
-                    </div>
-                    <div class="shortcut-item">
-                        <kbd>→</kbd> <kbd>↓</kbd> <kbd>Space</kbd> Next slide
-                    </div>
-                    <div class="shortcut-item">
-                        <kbd>Home</kbd> First slide
-                    </div>
-                    <div class="shortcut-item">
-                        <kbd>End</kbd> Last slide
-                    </div>
-                    <div class="shortcut-item">
-                        <kbd>F</kbd> <kbd>F11</kbd> Fullscreen
-                    </div>
-                    <div class="shortcut-item">
-                        <kbd>Esc</kbd> Close this help
-                    </div>
-                </div>
-                <p>Press <kbd>?</kbd> or <kbd>H</kbd> to show this help</p>
-            </div>
-        `;
-        
-        // Add styles
-        helpOverlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        `;
-        
-        const style = document.createElement('style');
-        style.textContent = `
-            #keyboard-help .help-content {
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 12px;
-                padding: 2rem;
-                max-width: 400px;
-                color: white;
-                backdrop-filter: blur(20px);
-            }
-            #keyboard-help h3 {
-                margin: 0 0 1.5rem 0;
-                text-align: center;
-                color: #1FB8CD;
-            }
-            #keyboard-help .shortcut-grid {
-                display: grid;
-                gap: 0.75rem;
-                margin-bottom: 1.5rem;
-            }
-            #keyboard-help .shortcut-item {
-                display: flex;
-                align-items: center;
-                font-size: 0.9rem;
-            }
-            #keyboard-help kbd {
-                background: #1FB8CD;
-                color: white;
-                padding: 0.25rem 0.5rem;
-                border-radius: 4px;
-                font-family: monospace;
-                font-size: 0.8rem;
-                margin-right: 0.5rem;
-                min-width: 1.5rem;
-                text-align: center;
-            }
-            #keyboard-help p {
-                text-align: center;
-                margin: 0;
-                font-size: 0.8rem;
-                opacity: 0.8;
-            }
-        `;
-        
-        document.head.appendChild(style);
-        document.body.appendChild(helpOverlay);
-        
-        // Close on click
-        helpOverlay.addEventListener('click', (e) => {
-            if (e.target === helpOverlay) {
-                this.hideKeyboardHelp();
-            }
-        });
-    }
-
-    hideKeyboardHelp() {
-        const helpOverlay = document.getElementById('keyboard-help');
-        if (helpOverlay) {
-            helpOverlay.remove();
-        }
-    }
-}
-
-// Initialize the application when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    const app = new PresentationApp();
-    const enhancements = new PresentationEnhancements(app);
-    
-    // Handle window resize
-    window.addEventListener('resize', () => {
-        app.handleResize();
-    });
-    
-    // Start the presentation
-    app.startPresentation();
-    
-    // Add loading animation
-    document.body.classList.add('loaded');
-    
-    // Performance optimization: Preload next slide images/content
-    const preloadNextSlide = () => {
-        const nextSlideIndex = app.currentSlide + 1;
-        if (nextSlideIndex < app.totalSlides) {
-            const nextSlide = document.getElementById(`slide-${nextSlideIndex}`);
-            if (nextSlide) {
-                nextSlide.style.display = 'flex';
-                setTimeout(() => {
-                    nextSlide.style.display = '';
-                }, 100);
-            }
-        }
-    };
-    
-    // Preload slides as user navigates
-    document.addEventListener('keydown', preloadNextSlide);
-    document.getElementById('nextBtn').addEventListener('click', preloadNextSlide);
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all components
+    initLoader();
+    initScrollProgress();
+    initParticles();
+    initTypewriter();
+    initIntersectionObserver();
+    initCounterAnimations();
+    initTimelineAnimation();
+    initTableAnimations();
+    initCardAnimations();
 });
 
-// Export for potential module use
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { PresentationApp, PresentationEnhancements };
+// Loading Screen Animation
+function initLoader() {
+    const loader = document.getElementById('loader');
+    const mainContent = document.getElementById('mainContent');
+    
+    setTimeout(() => {
+        loader.classList.add('hidden');
+        setTimeout(() => {
+            loader.style.display = 'none';
+            mainContent.classList.add('visible');
+        }, 500);
+    }, 3000);
 }
+
+// Scroll Progress Bar
+function initScrollProgress() {
+    const progressBar = document.getElementById('progressBar');
+    
+    function updateProgress() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        
+        progressBar.style.width = scrollPercent + '%';
+    }
+    
+    window.addEventListener('scroll', updateProgress);
+    updateProgress(); // Initial call
+}
+
+// Particle Effect
+function initParticles() {
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 3 + 1;
+            this.speedX = Math.random() * 2 - 1;
+            this.speedY = Math.random() * 2 - 1;
+            this.opacity = Math.random() * 0.5 + 0.2;
+        }
+        
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            
+            // Mouse interaction
+            const dx = mouseX - this.x;
+            const dy = mouseY - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 100) {
+                this.x -= dx * 0.02;
+                this.y -= dy * 0.02;
+            }
+            
+            // Boundary wrapping
+            if (this.x > canvas.width) this.x = 0;
+            if (this.x < 0) this.x = canvas.width;
+            if (this.y > canvas.height) this.y = 0;
+            if (this.y < 0) this.y = canvas.height;
+        }
+        
+        draw() {
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    
+    // Create particles
+    for (let i = 0; i < 50; i++) {
+        particles.push(new Particle());
+    }
+    
+    // Animation loop
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+        
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    // Mouse tracking
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+    
+    // Resize handling
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+}
+
+// Typewriter Effect
+function initTypewriter() {
+    const typewriterElement = document.getElementById('typewriter');
+    const text = 'AI Vehicle Damage Detection MVP Dashboard';
+    let i = 0;
+    
+    function typeWriter() {
+        if (i < text.length) {
+            typewriterElement.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 80);
+        } else {
+            // Add blinking cursor
+            typewriterElement.innerHTML += '<span class="cursor">|</span>';
+            // Add CSS for blinking cursor
+            const style = document.createElement('style');
+            style.textContent = `
+                .cursor {
+                    animation: blink 1s infinite;
+                }
+                @keyframes blink {
+                    0%, 50% { opacity: 1; }
+                    51%, 100% { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+    
+    setTimeout(typeWriter, 1000);
+}
+
+// Intersection Observer for Slide Animations
+function initIntersectionObserver() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const slideObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                
+                // Trigger specific animations based on slide content
+                if (entry.target.id === 'slide6') {
+                    animateTimeline();
+                }
+                if (entry.target.id === 'slide8') {
+                    animateCounters();
+                }
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all slides
+    document.querySelectorAll('.slide').forEach(slide => {
+        slideObserver.observe(slide);
+    });
+    
+    // Observe feature cards
+    const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const delay = parseInt(entry.target.dataset.delay) || 0;
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, delay);
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.feature-card, .payment-card, .stat-card').forEach(card => {
+        cardObserver.observe(card);
+    });
+}
+
+// Counter Animations
+function initCounterAnimations() {
+    function animateCounter(element, target, duration = 2000) {
+        const start = 0;
+        const startTime = performance.now();
+        
+        function updateCounter(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function
+            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+            const current = Math.floor(easeOutQuart * (target - start) + start);
+            
+            element.textContent = current;
+            
+            if (progress < 1) {
+                requestAnimationFrame(updateCounter);
+            } else {
+                element.textContent = target;
+            }
+        }
+        
+        requestAnimationFrame(updateCounter);
+    }
+    
+    window.animateCounters = function() {
+        const counters = document.querySelectorAll('.stat-number');
+        counters.forEach((counter, index) => {
+            const target = parseInt(counter.dataset.target);
+            setTimeout(() => {
+                animateCounter(counter, target, 2500);
+            }, index * 200);
+        });
+    };
+}
+
+// Timeline Animation
+function initTimelineAnimation() {
+    window.animateTimeline = function() {
+        const timelineLine = document.querySelector('.timeline-line');
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        
+        // Animate the timeline line
+        setTimeout(() => {
+            timelineLine.classList.add('animate');
+        }, 500);
+        
+        // Animate timeline items
+        timelineItems.forEach((item, index) => {
+            setTimeout(() => {
+                item.classList.add('visible');
+            }, 800 + (index * 300));
+        });
+    };
+}
+
+// Table Row Animations
+function initTableAnimations() {
+    const tableObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const rows = entry.target.querySelectorAll('tbody tr');
+                rows.forEach((row, index) => {
+                    const delay = parseInt(row.dataset.delay) || index * 100;
+                    setTimeout(() => {
+                        row.classList.add('visible');
+                    }, delay);
+                });
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    const budgetTable = document.querySelector('.budget-table');
+    if (budgetTable) {
+        tableObserver.observe(budgetTable);
+    }
+}
+
+// Card Animations
+function initCardAnimations() {
+    // Staggered animations for feature cards
+    const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const cards = entry.target.querySelectorAll('.feature-card, .payment-card, .stat-card');
+                cards.forEach((card, index) => {
+                    const delay = parseInt(card.dataset.delay) || index * 150;
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, delay);
+                });
+            }
+        });
+    }, { threshold: 0.2 });
+    
+    document.querySelectorAll('.features-grid, .payment-cards, .stats-grid').forEach(container => {
+        cardObserver.observe(container);
+    });
+}
+
+// Tech Badge Animations
+function initTechBadges() {
+    const techObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const badges = entry.target.querySelectorAll('.tech-badge');
+                badges.forEach((badge, index) => {
+                    setTimeout(() => {
+                        badge.style.animationDelay = `${index * 0.1}s`;
+                        badge.style.animation = 'popIn 0.5s ease-out forwards';
+                    }, index * 100);
+                });
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    document.querySelectorAll('.tech-stack').forEach(techStack => {
+        techObserver.observe(techStack);
+    });
+}
+
+// Button Interactions
+function initButtonInteractions() {
+    document.querySelectorAll('.btn').forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+        
+        button.addEventListener('mousedown', function() {
+            this.style.transform = 'translateY(0) scale(0.98)';
+        });
+        
+        button.addEventListener('mouseup', function() {
+            this.style.transform = 'translateY(-2px) scale(1)';
+        });
+    });
+    
+    // CTA Button Click
+    document.querySelector('.cta-button')?.addEventListener('click', function() {
+        // Add a success animation
+        this.innerHTML = '✓ Proposal Accepted!';
+        this.style.background = '#10B981';
+        this.style.transform = 'scale(1.05)';
+        
+        setTimeout(() => {
+            this.innerHTML = 'Processing...';
+        }, 1500);
+    });
+}
+
+// Smooth Scrolling for Navigation
+function initSmoothScrolling() {
+    // Add smooth scrolling behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+    
+    // Optional: Add keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowDown' || e.key === ' ') {
+            e.preventDefault();
+            window.scrollBy(0, window.innerHeight);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            window.scrollBy(0, -window.innerHeight);
+        }
+    });
+}
+
+// Initialize additional features
+document.addEventListener('DOMContentLoaded', function() {
+    initTechBadges();
+    initButtonInteractions();
+    initSmoothScrolling();
+});
+
+// Performance optimization
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Optimize scroll event listeners
+const optimizedScrollHandler = debounce(() => {
+    // Any additional scroll-based animations can go here
+}, 16); // ~60fps
+
+window.addEventListener('scroll', optimizedScrollHandler);
+
+// Add loading states for better UX
+function showLoadingState(element) {
+    element.style.opacity = '0.7';
+    element.style.pointerEvents = 'none';
+}
+
+function hideLoadingState(element) {
+    element.style.opacity = '1';
+    element.style.pointerEvents = 'auto';
+}
+
+// Error handling for animations
+function safeAnimate(animationFunction) {
+    try {
+        animationFunction();
+    } catch (error) {
+        console.warn('Animation error:', error);
+        // Fallback to show content without animation
+        document.querySelectorAll('.slide, .feature-card, .payment-card, .stat-card').forEach(el => {
+            el.classList.add('visible');
+        });
+    }
+}
+
+// Initialize all animations safely
+document.addEventListener('DOMContentLoaded', function() {
+    safeAnimate(() => {
+        // All initialization code is wrapped in error handling
+        console.log('AI Vehicle Damage Detection MVP Presentation Loaded Successfully');
+    });
+});
